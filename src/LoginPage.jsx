@@ -5,7 +5,7 @@ import { supabase } from './supabase-client';
 
 export default function LoginPage() {
   const navigate = useNavigate();
-  const [mode, setMode] = useState<'signin' | 'signup' | 'reset'>('signin');
+  const [mode, setMode] = useState('signin');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [msg, setMsg] = useState('');
