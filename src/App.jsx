@@ -6,6 +6,7 @@ import SuspensionApprovals from './SuspensionApprovals'
 import './App.css'
 import SuspensionsDashboard from './SuspensionDashboard'
 import RequireAuth from './RequireAuth'
+import RequireApprovalAuth from './RequireApprovalAuth'
 
 function App() {
 
@@ -19,9 +20,10 @@ function App() {
               <SuspensionForm />
               </RequireAuth>} />
           <Route path="/approvals" element={
-            <RequireAuth>
-            <SuspensionApprovals />
-            </RequireAuth>} />
+            <RequireApprovalAuth>
+              <SuspensionApprovals />
+            </RequireApprovalAuth>
+            } />
           <Route path="/dashboard" element={<RequireAuth>
             <SuspensionsDashboard />
             </RequireAuth>} />

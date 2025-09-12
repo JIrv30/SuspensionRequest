@@ -7,13 +7,10 @@ export default function SuspensionForm() {
   const { data: students, loading, error } = useStudents(search);
 
   const yearGroups = [7, 8, 9, 10, 11];
-  const suspensionLength = [0.5,1,1.5,2,2.5,3,3.5,4,4.5,5];
-
-  
-  
+  const suspensionLength = [0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5];
 
   const [formData, setFormData] = useState({
-    studentID: "",
+    studentId: "",
     studentName: "",
     yearGroup: "",
     suspensionDays: "",
@@ -44,42 +41,60 @@ export default function SuspensionForm() {
     const selected = students.find((s) => s.id === selectedId);
     setFormData((prev) => ({
       ...prev,
+      studentId: selectedId,
       studentName: selected?.student_name || "",
     }));
   };
 
+  const validate = () => {
+    if (!formData.studentName) return "Please select a student.";
+    if (formData.yearGroup === "" || formData.yearGroup === null) return "Please choose a year group.";
+    if (formData.suspensionDays === "" || formData.suspensionDays === null)
+      return "Please select the number of suspension days.";
+    if (!formData.incidentDate) return "Please enter the incident date.";
+    if (!formData.startDate) return "Please enter the suspension start date.";
+    if (!formData.endDate) return "Please enter the suspension end date.";
+    if (!formData.startTime) return "Please select a start time (AM/PM).";
+    if (!formData.endTime) return "Please select an end time (AM/PM).";
+    return "";
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setSubmitting(true);
     setErrorMsg("");
+    const problem = validate();
+    if (problem) {
+      setErrorMsg(problem);
+      return;
+    }
+
+    setSubmitting(true);
 
     const payload = {
-      // Optional denormalised fields:
-      student_name: formData.studentName || null,      // <-- your Suspensions table has this per earlier code
-      year_group: typeof formData.yearGroup === "number" ? formData.yearGroup : null,
-      number_of_days: typeof formData.suspensionDays === "number" ? formData.suspensionDays : null,
+      student_name: formData.studentName,
+      year_group: Number(formData.yearGroup),
+      number_of_days: Number(formData.suspensionDays),
       is_pending: formData.isPending,
-      incident_date: formData.incidentDate || null,
-      start_time: formData.startTime,     // "AM" | "PM"
-      start_date: formData.startDate || null,
-      end_time: formData.endTime,         // "AM" | "PM"
-      end_date: formData.endDate || null,
+      incident_date: formData.incidentDate,
+      start_time: formData.startTime,
+      start_date: formData.startDate,
+      end_time: formData.endTime,
+      end_date: formData.endDate,
       reintegration_date: formData.reintegrationDate || null,
       arbor_url: formData.arborUrl || null,
     };
 
     try {
       const { data, error } = await supabase
-        .from("Suspensions")        // table name with capital S (as you specified)
+        .from("Suspensions")
         .insert(payload)
         .select()
         .single();
 
       if (error) throw error;
 
-      // Reset form
       setFormData({
-        studentID:"",
+        studentId: "",
         studentName: "",
         yearGroup: "",
         suspensionDays: "",
@@ -92,7 +107,7 @@ export default function SuspensionForm() {
         reintegrationDate: "",
         arborUrl: "",
       });
-
+      setSearch("");
       console.log("Inserted:", data);
     } catch (err) {
       console.error("Insert failed:", err);
@@ -102,10 +117,11 @@ export default function SuspensionForm() {
     }
   };
 
-  useEffect(()=>{console.log(formData)},[submitting])
-
   return (
-    <form onSubmit={handleSubmit} className="max-w-2xl mx-auto bg-white p-8 rounded-2xl shadow-lg space-y-6">
+    <form
+      onSubmit={handleSubmit}
+      className="max-w-2xl mx-auto bg-white p-8 rounded-2xl shadow-lg space-y-6"
+    >
       <h2 className="text-2xl font-bold text-gray-800">Suspension Record Form</h2>
 
       {errorMsg && (
@@ -121,7 +137,7 @@ export default function SuspensionForm() {
           type="text"
           placeholder="Search student…"
           value={search}
-          onChange={(e)=>setSearch(e.target.value)}
+          onChange={(e) => setSearch(e.target.value)}
           className="mt-1 mb-2 w-full rounded-md border border-gray-300 p-2"
         />
         {error && (
@@ -130,7 +146,7 @@ export default function SuspensionForm() {
           </div>
         )}
         <select
-          name="studenId"
+          name="studentId"
           value={formData.studentId}
           onChange={handleStudentChange}
           className="block w-full rounded-md border border-gray-300 p-2"
@@ -139,7 +155,7 @@ export default function SuspensionForm() {
           <option value="">{loading ? "Loading…" : "Select student…"}</option>
           {students.map((s) => (
             <option key={s.id} value={s.id}>
-              {s.student_name} {s.year_group ? `(Year ${s.year_group})` : ""}
+              {s.student_name}
             </option>
           ))}
         </select>
@@ -164,7 +180,9 @@ export default function SuspensionForm() {
 
       {/* Suspension Days */}
       <div>
-        <label className="block text-sm font-medium text-gray-700">Number of Suspension Days</label>
+        <label className="block text-sm font-medium text-gray-700">
+          Number of Suspension Days
+        </label>
         <select
           name="suspensionDays"
           value={formData.suspensionDays}
@@ -174,7 +192,9 @@ export default function SuspensionForm() {
         >
           <option value="">Select suspension length...</option>
           {suspensionLength.map((d) => (
-            <option key={d} value={d}>{d} day{d === 1 ? "" : "s"}</option>
+            <option key={d} value={d}>
+              {d} day{d === 1 ? "" : "s"}
+            </option>
           ))}
         </select>
       </div>
@@ -200,19 +220,23 @@ export default function SuspensionForm() {
           value={formData.incidentDate}
           onChange={handleChange}
           className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+          required
         />
       </div>
 
       {/* Suspension Start */}
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <label className="block text-sm font-medium text-gray-700">Suspension Start Date</label>
+          <label className="block text-sm font-medium text-gray-700">
+            Suspension Start Date
+          </label>
           <input
             type="date"
             name="startDate"
             value={formData.startDate}
             onChange={handleChange}
             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+            required
           />
         </div>
         <div>
@@ -222,6 +246,7 @@ export default function SuspensionForm() {
             value={formData.startTime}
             onChange={handleChange}
             className="mt-1 block w-full rounded-md border border-gray-300 bg-white p-2 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+            required
           >
             <option>AM</option>
             <option>PM</option>
@@ -232,13 +257,16 @@ export default function SuspensionForm() {
       {/* Suspension End */}
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <label className="block text-sm font-medium text-gray-700">Suspension End Date</label>
+          <label className="block text-sm font-medium text-gray-700">
+            Suspension End Date
+          </label>
           <input
             type="date"
             name="endDate"
             value={formData.endDate}
             onChange={handleChange}
             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+            required
           />
         </div>
         <div>
@@ -248,6 +276,7 @@ export default function SuspensionForm() {
             value={formData.endTime}
             onChange={handleChange}
             className="mt-1 block w-full rounded-md border border-gray-300 bg-white p-2 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+            required
           >
             <option>AM</option>
             <option>PM</option>
@@ -257,7 +286,9 @@ export default function SuspensionForm() {
 
       {/* Reintegration Date */}
       <div>
-        <label className="block text-sm font-medium text-gray-700">Reintegration Date</label>
+        <label className="block text-sm font-medium text-gray-700">
+          Reintegration Date
+        </label>
         <input
           type="date"
           name="reintegrationDate"

@@ -1,9 +1,11 @@
-// RequireAuth.jsx
+// RequireApprovalAuth.jsx
 import { useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
 import { supabase } from "./supabase-client";
 
-export default function RequireAuth({ children }) {
+const allowedEmails = ["jirving@kgabrunepark.uk"]; // add others here
+
+export default function RequireApprovalAuth({ children }) {
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState(null);
 
@@ -32,6 +34,14 @@ export default function RequireAuth({ children }) {
   if (loading) return <div className="p-6 text-gray-600">Loading…</div>;
 
   if (!user) return <Navigate to="/login" replace />;
+
+  if (!allowedEmails.includes(user.email)) {
+    return (
+      <div className="p-6 text-red-600 font-semibold">
+        You do not have permission to view this page.
+      </div>
+    );
+  }
 
   return children;
 }
