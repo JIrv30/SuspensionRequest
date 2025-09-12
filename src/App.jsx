@@ -7,6 +7,7 @@ import './App.css'
 import SuspensionsDashboard from './SuspensionDashboard'
 import RequireAuth from './RequireAuth'
 import RequireApprovalAuth from './RequireApprovalAuth'
+import LoginPage from './LoginPage'
 
 function App() {
 
@@ -15,6 +16,7 @@ function App() {
       <Header />
       <main className="p-6">
         <Routes>
+          <Route path='/' element={<LoginPage />} />
           <Route path="/form" element={
             <RequireAuth>
               <SuspensionForm />
