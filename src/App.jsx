@@ -1,0 +1,35 @@
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+import AuthCallBack from './AuthCallback'
+import Header from './Header'
+import SuspensionForm from './SuspenionForm'
+import SuspensionApprovals from './SuspensionApprovals'
+import './App.css'
+import SuspensionsDashboard from './SuspensionDashboard'
+import RequireAuth from './RequireAuth'
+
+function App() {
+
+  return (
+    <Router>
+      <Header />
+      <main className="p-6">
+        <Routes>
+          <Route path="/form" element={
+            <RequireAuth>
+              <SuspensionForm />
+              </RequireAuth>} />
+          <Route path="/approvals" element={
+            <RequireAuth>
+            <SuspensionApprovals />
+            </RequireAuth>} />
+          <Route path="/dashboard" element={<RequireAuth>
+            <SuspensionsDashboard />
+            </RequireAuth>} />
+          <Route path='/auth/callback' element={<AuthCallBack />} />
+        </Routes>
+      </main>
+    </Router>
+  );
+}
+
+export default App
