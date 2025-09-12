@@ -7,12 +7,11 @@ export default function AuthCallback() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // When supabase returns here, session is already set in local storage.
-    // You can optionally check it and then send user on their way.
     (async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      // You could stash session/user into your app state here if you keep one.
-      navigate('/', { replace: true });
+      // Parses the hash, stores the session if present
+      await supabase.auth.getSession();
+      // Send the user someplace useful after login
+      navigate('/dashboard', { replace: true });
     })();
   }, [navigate]);
 
