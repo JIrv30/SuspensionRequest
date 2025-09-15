@@ -77,17 +77,17 @@ export default function LoginPage() {
         )}
 
         {/* Email */}
-        <label className="block text-sm text-gray-700">Email</label>
+        {/* <label className="block text-sm text-gray-700">Email</label>
         <input
           type="email"
           className="mt-1 mb-3 w-full rounded-md border border-gray-300 p-2 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           autoComplete="email"
-        />
+        /> */}
 
         {/* Password (not shown in reset mode) */}
-        {mode !== 'reset' && (
+        {/* {mode !== 'reset' && (
           <>
             <label className="block text-sm text-gray-700">Password</label>
             <input
@@ -98,10 +98,10 @@ export default function LoginPage() {
               autoComplete={mode === 'signup' ? 'new-password' : 'current-password'}
             />
           </>
-        )}
+        )} */}
 
         {/* Primary action */}
-        <button
+        {/* <button
           type="button"
           disabled={busy}
           onClick={mode === 'signin' ? signInEmail : mode === 'signup' ? signUpEmail : resetPassword}
@@ -114,14 +114,14 @@ export default function LoginPage() {
             : mode === 'signup'
             ? 'Create account'
             : 'Send reset link'}
-        </button>
+        </button> */}
 
         {/* Divider */}
-        <div className="my-4 flex items-center">
+        {/* <div className="my-4 flex items-center">
           <div className="h-px flex-1 bg-gray-200" />
           <span className="px-3 text-xs uppercase tracking-wide text-gray-500">or</span>
           <div className="h-px flex-1 bg-gray-200" />
-        </div>
+        </div> */}
 
         {/* Google */}
         <button
@@ -139,7 +139,7 @@ export default function LoginPage() {
         </button>
 
         {/* Links */}
-        <div className="mt-3 flex flex-wrap items-center justify-between gap-2 text-sm text-gray-600">
+        {/* <div className="mt-3 flex flex-wrap items-center justify-between gap-2 text-sm text-gray-600">
           {mode !== 'signin' && (
             <button type="button" onClick={() => setMode('signin')} className="underline">
               Have an account? Sign in
@@ -155,7 +155,7 @@ export default function LoginPage() {
               Forgot password?
             </button>
           )}
-        </div>
+        </div> */}
       </div>
     </div>
   );

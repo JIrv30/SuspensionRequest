@@ -12,7 +12,7 @@ export default function SuspensionApprovals() {
   const [acting, setActing] = useState(false);
 
   // Replace with actual headteacher name/email from your auth/user context if you have it
-  const HEADTEACHER_NAME = "Headteacher";
+  const HEADTEACHER_NAME = "Kerry Payne";
 
   const fetchPending = async () => {
     setLoading(true);
