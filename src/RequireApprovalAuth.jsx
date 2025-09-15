@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
 import { supabase } from "./supabase-client";
 
-const allowedEmails = ["jirving@kgabrunepark.uk"]; // add others here
+const allowedEmails = ["jirving@kgabrunepark.uk", "kpayne@kgabrunepark.uk"]; // add others here
 
 export default function RequireApprovalAuth({ children }) {
   const [loading, setLoading] = useState(true);
